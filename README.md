@@ -86,6 +86,8 @@ public/
 
 ## Deployment
 
+Live at <https://rustchamber-www.silvalipe765.workers.dev>.
+
 The site is a Vite + Svelte static build, not a SvelteKit app, so
 `@sveltejs/adapter-cloudflare` does not apply here. It is deployed as a Cloudflare Worker with
 static assets using Wrangler.
@@ -95,8 +97,12 @@ npx wrangler login   # first time only
 npm run deploy       # builds and runs wrangler deploy
 ```
 
-The Worker is named `rustchamber-www` and its configuration lives in `wrangler.jsonc`.
-`npm run build` writes `dist/`, and `npm run preview:worker` serves that build locally through
-Wrangler.
+The Worker is named `rustchamber-www` and its configuration lives in `wrangler.jsonc`, which
+pins the `account_id`. `npm run build` writes `dist/`, and `npm run preview:worker` serves that
+build locally through Wrangler.
+
+`html_handling: "auto-trailing-slash"` serves `/download/` from `download/index.html` and
+redirects `/download` to it. `not_found_handling: "none"` returns a real 404 for unknown paths
+instead of the home page.
 
 This repository does not use GitHub Pages.

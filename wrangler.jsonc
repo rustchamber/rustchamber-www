@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "rustchamber-www",
+  "account_id": "cdb43b73053a4ce4ffb620649568c034",
   "compatibility_date": "2026-11-05",
   "assets": {
     "directory": "./dist",
