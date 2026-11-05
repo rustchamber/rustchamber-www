@@ -86,7 +86,7 @@ public/
 
 ## Deployment
 
-Live at <https://rustchamber-www.silvalipe765.workers.dev>.
+Live at <https://rustchamber.lipecode.com>.
 
 The site is a Vite + Svelte static build, not a SvelteKit app, so
 `@sveltejs/adapter-cloudflare` does not apply here. It is deployed as a Cloudflare Worker with
@@ -98,7 +98,9 @@ npm run deploy       # builds and runs wrangler deploy
 ```
 
 The Worker is named `rustchamber-www` and its configuration lives in `wrangler.jsonc`, which
-pins the `account_id`. `npm run build` writes `dist/`, and `npm run preview:worker` serves that
+pins the `account_id`. The custom domain `rustchamber.lipecode.com` is attached in the
+Cloudflare dashboard, and the `workers.dev` routes are disabled, so that hostname is the only
+way to reach the site. `npm run build` writes `dist/`, and `npm run preview:worker` serves that
 build locally through Wrangler.
 
 `html_handling: "auto-trailing-slash"` serves `/download/` from `download/index.html` and

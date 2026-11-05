@@ -3,6 +3,11 @@
   "name": "rustchamber-www",
   "account_id": "cdb43b73053a4ce4ffb620649568c034",
   "compatibility_date": "2026-11-05",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "rustchamber.lipecode.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "html_handling": "auto-trailing-slash",
