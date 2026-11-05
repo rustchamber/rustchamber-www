@@ -12,6 +12,7 @@ Repository: <https://github.com/rustchamber/rustchamber-www>
 - Tailwind CSS (preflight only; the visual system lives in `src/app.css`)
 - Motion for view-triggered animation
 - Lucide icons
+- Cloudflare Workers with static assets, deployed by Wrangler
 
 ## Requirements
 
@@ -85,5 +86,17 @@ public/
 
 ## Deployment
 
-The build is fully static. Upload `dist/` to any static host. This repository does not use
-GitHub Pages or any other deployment workflow.
+The site is a Vite + Svelte static build, not a SvelteKit app, so
+`@sveltejs/adapter-cloudflare` does not apply here. It is deployed as a Cloudflare Worker with
+static assets using Wrangler.
+
+```bash
+npx wrangler login   # first time only
+npm run deploy       # builds and runs wrangler deploy
+```
+
+The Worker is named `rustchamber-www` and its configuration lives in `wrangler.jsonc`.
+`npm run build` writes `dist/`, and `npm run preview:worker` serves that build locally through
+Wrangler.
+
+This repository does not use GitHub Pages.

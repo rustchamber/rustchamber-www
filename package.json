@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "preview:worker": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
     "check": "svelte-check --tsconfig ./tsconfig.app.json"
   },
   "dependencies": {
@@ -22,6 +24,7 @@
     "svelte-check": "^4.7.7",
     "tailwindcss": "^4.3.4",
     "typescript": "~6.0.3",
-    "vite": "^8.3.5"
+    "vite": "^8.3.5",
+    "wrangler": "^4.158.0"
   }
 }
