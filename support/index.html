@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#fdfcfa" />
+    <script>
+      (() => {
+        try {
+          const key = 'rustchamber-theme';
+          const saved = localStorage.getItem(key);
+          const theme = saved === 'light' || saved === 'dark'
+            ? saved
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+          document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#12110f' : '#fdfcfa');
+        } catch {}
+      })();
+    </script>
+    <meta name="description" content="Get help with RustChamber. Documentation, GitHub issues and answers to common questions." />
+    <title>Support – RustChamber</title>
+  </head>
+  <body data-page="support">
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
