@@ -50,9 +50,9 @@ button in the navigation switches between light and dark and stores the choice i
 `localStorage` under `rustchamber-theme`. The inline script in each HTML entry applies the
 theme before first paint, so there is no flash.
 
-The RustChamber screenshots follow the site theme: `public/screenshots/*.webp` for light and
-`public/screenshots/*-dark.webp` for dark. `ThemeImage.svelte` preloads the other variant so
-the switch is immediate.
+The RustChamber screenshots follow the site theme: `assets/screenshots/*.webp` for light and
+`assets/screenshots/*-dark.webp` for dark. `ThemeImage.svelte` preloads the other variant for
+the priority screenshot, so the first theme switch does not wait for a new download.
 
 ## Motion
 
@@ -64,6 +64,18 @@ animations.
 ## Structure
 
 ```
+assets/
+  bg-header-art.png            master header artwork
+  logo.png
+  og.png                       master social artwork
+  og.jpg                       optimized social artwork served to scrapers
+  screenshots/                 theme-aware app screenshots
+scripts/
+  assets/
+    lib.mjs
+    manifest.json
+    sync.mjs
+    verify.mjs
 src/
   App.svelte
   app.css
@@ -77,12 +89,42 @@ src/
     reveal.ts
     site.ts
     theme.ts
-src/assets/bg-header-art.png   source header artwork
 public/
-  bg-header-art.webp           optimized header artwork
+  favicon.svg
   fonts/
-  screenshots/                 theme-aware app screenshots
 ```
+
+## Assets (R2 + AVIF)
+
+Master images live in `assets/` and are not part of the site bundle. They are uploaded to the
+Cloudflare R2 bucket `assets-projects-lipecode` (account `cdb43b73053a4ce4ffb620649568c034`)
+under the project prefix `rustchamber/`, so every project keeps its own folder inside the
+shared bucket. The public origin is <https://assets-projects.lipecode.com>.
+
+Use the endpoint `https://cdb43b73053a4ce4ffb620649568c034.r2.cloudflarestorage.com`.
+
+Copy `.env.example` to `.env` and fill in the R2 S3 credentials. Then:
+
+```bash
+npm run assets:sync:dry   # list what would be uploaded
+npm run assets:sync       # upload missing objects
+npm run assets:verify     # HEAD every public URL and its AVIF variant
+```
+
+`sync` skips objects that already exist; pass `-- --force` to overwrite and `-- --only=<key>`
+to sync a single entry. `verify` fails when a transformed URL does not return `image/avif` or
+when an asset exceeds its byte budget.
+
+Images are converted at the edge. Requesting
+`https://assets-projects.lipecode.com/cdn-cgi/image/width=2000,quality=60,format=auto/rustchamber/bg-header-art.png`
+returns AVIF to clients that accept it; no AVIF files are stored in the bucket. Uploaded
+objects carry `Cache-Control: public, max-age=604800, stale-while-revalidate=86400`, so
+browsers keep them for a week.
+
+Cloudflare only encodes AVIF up to 2000 px, so the `srcset` widths stop at 2000; wider
+requests fall back to WebP. To change an image, prefer a new key and update the caller. If the
+key must stay, run `npm run assets:sync -- --force --only=<key>` and purge both the object and
+its `/cdn-cgi/image/` URLs in the Cloudflare cache.
 
 ## Deployment
 

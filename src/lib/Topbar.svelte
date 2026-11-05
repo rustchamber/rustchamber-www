@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Moon, Sun } from '@lucide/svelte'
+  import { imageUrl } from './assets'
   import GithubMark from './icons/GithubMark.svelte'
   import { BRAND, GITHUB, navLinks } from './site'
   import { theme, toggleTheme } from './theme'
@@ -20,7 +21,15 @@
   <div class="topbar-inner" class:menu-open={menuOpen}>
     <div class="nav-cluster">
       <a class="brand" href="/" onclick={close} aria-label={BRAND}>
-        <img class="brand-logo" src="/logo.png" alt="" width="30" height="30" />
+        <img
+          class="brand-logo"
+          src={imageUrl('logo.png', { width: 60, quality: 80 })}
+          srcset={`${imageUrl('logo.png', { width: 30, quality: 80 })} 1x, ${imageUrl('logo.png', { width: 60, quality: 80 })} 2x`}
+          sizes="30px"
+          alt=""
+          width="30"
+          height="30"
+        />
       </a>
       <nav class="nav" id="main-nav" class:open={menuOpen} aria-label="Main navigation">
         <div class="nav-center">

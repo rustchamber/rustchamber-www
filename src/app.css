@@ -391,9 +391,18 @@ img, svg { display: block; }
   z-index: -1;
   inset: -8rem 0 auto 0;
   height: 944px;
-  background: url("/bg-header-art.webp") 50% 46% / cover no-repeat;
+  overflow: hidden;
   -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
   mask-image: linear-gradient(to bottom, #000 78%, transparent);
+  pointer-events: none;
+}
+.home-art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 46%;
   pointer-events: none;
 }
 .home-art::after {

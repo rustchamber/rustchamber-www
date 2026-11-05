@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import { imageSrcset, imageUrl } from './assets'
   import { theme } from './theme'
 
   let {
@@ -20,12 +21,22 @@
     priority?: boolean
   } = $props()
 
-  const src = $derived($theme === 'dark' ? dark : light)
+  const widths = [640, 960, 1280, 1600, 2000]
+  const quality = 62
+  const sizes = '(max-width: 1248px) calc(100vw - 3rem), 1200px'
+
+  const active = $derived($theme === 'dark' ? dark : light)
+  const src = $derived(imageUrl(active, { width: 1600, quality }))
+  const srcset = $derived(imageSrcset(active, widths, { quality }))
 
   onMount(() => {
+    if (!priority) return
+    const other = $theme === 'dark' ? light : dark
     const preload = new Image()
-    preload.src = $theme === 'dark' ? light : dark
+    preload.src = imageUrl(other, { width: 1600, quality })
+    preload.srcset = imageSrcset(other, widths, { quality }) ?? ''
+    preload.sizes = sizes
   })
 </script>
 
-<img class={imgClass} src={src} {alt} {width} {height} loading={priority ? 'eager' : 'lazy'} decoding="async" />
+<img class={imgClass} {src} {srcset} {sizes} {alt} {width} {height} loading={priority ? 'eager' : 'lazy'} decoding="async" />

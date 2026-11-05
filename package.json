@@ -9,7 +9,10 @@
     "preview": "vite preview",
     "preview:worker": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json"
+    "check": "svelte-check --tsconfig ./tsconfig.app.json",
+    "assets:sync": "node --env-file=.env scripts/assets/sync.mjs",
+    "assets:sync:dry": "node --env-file=.env scripts/assets/sync.mjs --dry-run",
+    "assets:verify": "node --env-file-if-exists=.env scripts/assets/verify.mjs"
   },
   "dependencies": {
     "@lucide/svelte": "^1.68.0",

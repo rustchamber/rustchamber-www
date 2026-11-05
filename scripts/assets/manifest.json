@@ -1,0 +1,57 @@
+[
+	{
+		"source": "assets/bg-header-art.png",
+		"key": "bg-header-art.png",
+		"contentType": "image/png"
+	},
+	{
+		"source": "assets/logo.png",
+		"key": "logo.png",
+		"contentType": "image/png"
+	},
+	{
+		"source": "assets/og.jpg",
+		"key": "og.jpg",
+		"contentType": "image/jpeg"
+	},
+	{
+		"source": "assets/screenshots/rustchamber-chat-dark.webp",
+		"key": "screenshots/rustchamber-chat-dark.webp",
+		"contentType": "image/webp"
+	},
+	{
+		"source": "assets/screenshots/rustchamber-chat.webp",
+		"key": "screenshots/rustchamber-chat.webp",
+		"contentType": "image/webp"
+	},
+	{
+		"source": "assets/screenshots/rustchamber-git-dark.webp",
+		"key": "screenshots/rustchamber-git-dark.webp",
+		"contentType": "image/webp"
+	},
+	{
+		"source": "assets/screenshots/rustchamber-git.webp",
+		"key": "screenshots/rustchamber-git.webp",
+		"contentType": "image/webp"
+	},
+	{
+		"source": "assets/screenshots/rustchamber-home-dark.webp",
+		"key": "screenshots/rustchamber-home-dark.webp",
+		"contentType": "image/webp"
+	},
+	{
+		"source": "assets/screenshots/rustchamber-home.webp",
+		"key": "screenshots/rustchamber-home.webp",
+		"contentType": "image/webp"
+	},
+	{
+		"source": "assets/screenshots/rustchamber-settings-dark.webp",
+		"key": "screenshots/rustchamber-settings-dark.webp",
+		"contentType": "image/webp"
+	},
+	{
+		"source": "assets/screenshots/rustchamber-settings.webp",
+		"key": "screenshots/rustchamber-settings.webp",
+		"contentType": "image/webp"
+	}
+]
