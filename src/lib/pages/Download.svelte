@@ -2,10 +2,10 @@
   import { Apple, Smartphone } from '@lucide/svelte'
   import { GITHUB } from '../site'
 
-  const DMG = GITHUB + '/releases/download/v0.2.1-beta/RustChamber-0.2.1-beta-macos-universal.dmg'
+  const DMG = GITHUB + '/releases/download/v0.2.2-beta/RustChamber-0.2.2-beta-macos-universal.dmg'
 
   const desktop = [
-    { label: 'macOS (Apple Silicon & Intel)', ver: '0.2.1 beta', icon: Apple },
+    { label: 'macOS (Apple Silicon & Intel)', ver: '0.2.2 beta', icon: Apple },
   ]
   const mobile = [
     { label: 'iOS', note: 'Coming soon', icon: Apple },
