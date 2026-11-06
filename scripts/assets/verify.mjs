@@ -1,22 +1,20 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { humanBytes, pool, publicUrl, transformUrl } from './lib.mjs';
+import { humanBytes, pool, publicUrl } from './lib.mjs';
 
 const MANIFEST = fileURLToPath(new URL('./manifest.json', import.meta.url));
-const ACCEPT = 'image/avif,image/webp,image/*,*/*;q=0.8';
+const SITE = (process.env.SITE_URL?.trim() || 'https://rustchamber.lipecode.com').replace(/\/+$/, '');
+const ACCEPT = 'image/webp,image/*,*/*;q=0.8';
 const KB = 1024;
 
 function rules(key) {
-	if (key.startsWith('screenshots/')) {
-		return { width: 2000, quality: 62, maxTransformBytes: 180 * KB };
-	}
-	if (key === 'logo.png') {
-		return { width: 60, quality: 80, maxTransformBytes: 15 * KB };
-	}
-	if (key === 'og.jpg') {
-		return { width: 1200, quality: 82, maxDirectBytes: 200 * KB };
-	}
-	return { width: 2000, quality: 60, maxTransformBytes: 150 * KB };
+	if (key.startsWith('screenshots/')) return { width: 2000, maxBytes: 450 * KB };
+	if (key === 'logo.png') return { width: 60, maxBytes: 20 * KB };
+	return { width: 2000, maxBytes: 900 * KB };
+}
+
+function imagePath(key, width) {
+	return `${SITE}/img/${key.replace(/\.[^./]+$/, '')}-${width}.webp`;
 }
 
 async function head(url, headers = {}, attempts = 3) {
@@ -50,39 +48,31 @@ function lengthOf(response) {
 
 async function check(entry) {
 	const limits = rules(entry.key);
-	const result = { key: entry.key, checks: [], problems: [] };
+	const result = { key: entry.key, problems: [] };
 
-	const direct = await head(publicUrl(entry.key));
-	result.direct = direct;
-	const directType = (direct.headers.get('content-type') ?? '').toLowerCase();
-	if (!direct.ok || !directType.startsWith('image/')) {
-		result.problems.push(`direct: HTTP ${describe(direct)}`);
-	}
-	const directLength = lengthOf(direct);
-	if (limits.maxDirectBytes && (!directLength || directLength > limits.maxDirectBytes)) {
-		result.problems.push(
-			`direct size ${directLength ? humanBytes(directLength) : 'unknown'} > ${humanBytes(limits.maxDirectBytes)}`
-		);
+	const stored = await head(publicUrl(entry.key));
+	result.stored = stored;
+	const storedType = (stored.headers.get('content-type') ?? '').toLowerCase();
+	if (!stored.ok || !storedType.startsWith('image/')) {
+		result.problems.push(`stored: HTTP ${describe(stored)}`);
 	}
 
-	const transformed = await head(
-		transformUrl(entry.key, { width: limits.width, quality: limits.quality }),
-		{ accept: ACCEPT }
-	);
-	result.transform = transformed;
-	const transformType = (transformed.headers.get('content-type') ?? '').toLowerCase();
-	if (!transformed.ok) {
-		result.problems.push(`transform: HTTP ${describe(transformed)}`);
-	} else if (transformType !== 'image/avif') {
-		result.problems.push(`transform content-type is ${transformType || 'empty'}, expected image/avif`);
+	const served = await head(imagePath(entry.key, limits.width), { accept: ACCEPT });
+	result.served = served;
+	const servedType = (served.headers.get('content-type') ?? '').toLowerCase();
+	if (!served.ok) {
+		result.problems.push(`served: HTTP ${describe(served)}`);
+	} else if (servedType !== 'image/webp') {
+		result.problems.push(`served content-type is ${servedType || 'empty'}, expected image/webp`);
 	}
-	const transformLength = lengthOf(transformed);
-	if (limits.maxTransformBytes && transformed.status === 200) {
-		if (!transformLength) {
-			result.problems.push('transform size is unknown');
-		} else if (transformLength > limits.maxTransformBytes) {
+
+	const servedLength = lengthOf(served);
+	if (served.status === 200) {
+		if (!servedLength) {
+			result.problems.push('served size is unknown');
+		} else if (servedLength > limits.maxBytes) {
 			result.problems.push(
-				`transform size ${humanBytes(transformLength)} > ${humanBytes(limits.maxTransformBytes)} at width ${limits.width}`
+				`served size ${humanBytes(servedLength)} > ${humanBytes(limits.maxBytes)} at width ${limits.width}`
 			);
 		}
 	}
@@ -108,11 +98,10 @@ const results = await pool(entries, 4, async (entry) => {
 for (const result of results) {
 	const limits = result.limits ?? rules(result.key);
 	console.log(`${result.ok ? 'ok  ' : 'FAIL'} ${result.key}`);
-	if (result.direct) console.log(`     direct    ${describe(result.direct)}`);
-	if (result.transform) {
-		console.log(
-			`     transform ${describe(result.transform)} (width ${limits.width}, quality ${limits.quality})`
-		);
+	if (result.stored) console.log(`     stored    ${describe(result.stored)}`);
+	if (result.served) {
+		console.log(`     served    ${describe(result.served)} (width ${limits.width})`);
+		console.log(`     ${imagePath(result.key, limits.width)}`);
 	}
 	for (const problem of result.problems) console.log(`     ${problem}`);
 }

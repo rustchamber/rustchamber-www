@@ -1,12 +1,10 @@
 <script lang="ts">
   import { AppWindow, Apple, Download, Terminal } from '@lucide/svelte'
-  import { imageSrcset, imageUrl } from '../assets'
+  import { HERO_WIDTHS, imageSrcset, imageUrl } from '../assets'
   import ThemeImage from '../ThemeImage.svelte'
   import { DOCS } from '../site'
 
-  const heroImage = 'bg-header-art.png'
-  const heroWidths = [640, 960, 1280, 1600, 2000]
-  const heroQuality = 60
+  const heroImage = 'bg-header-art'
 
   const platforms = [
     { label: 'macOS', href: '/download/', icon: Apple, note: '' },
@@ -20,8 +18,8 @@
   <section class="home-hero">
     <div class="home-art" aria-hidden="true">
       <img
-        src={imageUrl(heroImage, { width: 1600, quality: heroQuality })}
-        srcset={imageSrcset(heroImage, heroWidths, { quality: heroQuality })}
+        src={imageUrl(heroImage, 1600)}
+        srcset={imageSrcset(heroImage, HERO_WIDTHS)}
         sizes="100vw"
         width={2944}
         height={1648}
@@ -42,8 +40,8 @@
     <div class="home-stage">
       <div class="home-window">
         <ThemeImage
-          light="screenshots/rustchamber-home.webp"
-          dark="screenshots/rustchamber-home-dark.webp"
+          light="screenshots/rustchamber-home"
+          dark="screenshots/rustchamber-home-dark"
           alt="RustChamber on macOS with the project sidebar and a new session"
           imgClass="home-shot"
           priority
@@ -59,8 +57,8 @@
       <p class="home-lede">Chat and the session context live in one window, with files, changes, git and the terminal a click away. The session panel keeps context, usage and the project close at hand, without another app in the way.</p>
       <div class="home-window home-demo">
         <ThemeImage
-          light="screenshots/rustchamber-chat.webp"
-          dark="screenshots/rustchamber-chat-dark.webp"
+          light="screenshots/rustchamber-chat"
+          dark="screenshots/rustchamber-chat-dark"
           alt="A RustChamber session with the chat, the session context panel and the composer"
           imgClass="home-shot"
         />
@@ -75,8 +73,8 @@
       <p class="home-lede">The changes panel lists every file the agent touched. The git panel stages, commits, branches and pushes from the same window, so a session ends with a commit and not a pile of notes.</p>
       <div class="home-window home-demo">
         <ThemeImage
-          light="screenshots/rustchamber-git.webp"
-          dark="screenshots/rustchamber-git-dark.webp"
+          light="screenshots/rustchamber-git"
+          dark="screenshots/rustchamber-git-dark"
           alt="The RustChamber git panel showing an unstaged README change, a commit message and the project history"
           imgClass="home-shot"
         />
@@ -91,8 +89,8 @@
       <p class="home-lede">The theme engine moves between a light and a dark palette, keeps every text token above a contrast floor and lets you set the accent, font, density and motion. The screenshot follows the theme you are using.</p>
       <div class="home-window home-demo">
         <ThemeImage
-          light="screenshots/rustchamber-settings.webp"
-          dark="screenshots/rustchamber-settings-dark.webp"
+          light="screenshots/rustchamber-settings"
+          dark="screenshots/rustchamber-settings-dark"
           alt="RustChamber settings on the Appearance page, with the theme controls and the RustChamber theme selected"
           imgClass="home-shot"
         />

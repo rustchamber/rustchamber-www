@@ -51,8 +51,9 @@ button in the navigation switches between light and dark and stores the choice i
 theme before first paint, so there is no flash.
 
 The RustChamber screenshots follow the site theme: `assets/screenshots/*.webp` for light and
-`assets/screenshots/*-dark.webp` for dark. `ThemeImage.svelte` preloads the other variant for
-the priority screenshot, so the first theme switch does not wait for a new download.
+`assets/screenshots/*-dark.webp` for dark. `ThemeImage.svelte` picks the variant for the active
+theme from the generated `srcset` and preloads the other one for the priority screenshot, so the
+first theme switch does not wait for a new download.
 
 ## Motion
 
@@ -66,21 +67,21 @@ animations.
 ```
 assets/
   bg-header-art.png            master header artwork
-  logo.png
+  logo.png                     master logo
   og.png                       master social artwork
-  og.jpg                       optimized social artwork served to scrapers
-  screenshots/                 theme-aware app screenshots
+  screenshots/                 master, theme-aware app screenshots (3024 px)
 scripts/
   assets/
-    lib.mjs
-    manifest.json
-    sync.mjs
-    verify.mjs
+    lib.mjs                    R2 signing and upload helpers
+    manifest.json              what to upload and its content type
+    sync.mjs                   uploads the masters
+    verify.mjs                 checks the stored objects and the served images
 src/
   App.svelte
   app.css
   main.ts
   lib/
+    assets.ts
     Footer.svelte
     ThemeImage.svelte
     Topbar.svelte
@@ -89,42 +90,54 @@ src/
     reveal.ts
     site.ts
     theme.ts
+worker/
+  index.mjs                    dynamic image endpoint at /img/*
 public/
   favicon.svg
   fonts/
+  og.jpg                       social artwork for scrapers
 ```
 
-## Assets (R2 + AVIF)
+## Images
 
-Master images live in `assets/` and are not part of the site bundle. They are uploaded to the
-Cloudflare R2 bucket `assets-projects-lipecode` (account `cdb43b73053a4ce4ffb620649568c034`)
-under the project prefix `rustchamber/`, so every project keeps its own folder inside the
-shared bucket. The public origin is <https://assets-projects.lipecode.com>.
+Images are resized on demand by the Worker, not at build time. Whenever a page asks for
+`/img/<name>-<width>.webp`, `worker/index.mjs` fetches the master from the R2 bucket
+`assets-projects-lipecode` (`rustchamber/` prefix, public origin
+<https://assets-projects.lipecode.com>), asks Cloudflare Image Resizing for that width as WebP, and
+returns the result with a one-year immutable `Cache-Control`. The response is also written to the
+Worker cache, so a given width is encoded once per PoP and every later visitor gets it from cache.
 
-Use the endpoint `https://cdb43b73053a4ce4ffb620649568c034.r2.cloudflarestorage.com`.
+```
+/img/bg-header-art-1600.webp
+/img/screenshots/rustchamber-chat-2000.webp
+```
 
-Copy `.env.example` to `.env` and fill in the R2 S3 credentials. Then:
+Nothing about a width is baked into the build: the `srcset` in `ThemeImage.svelte` asks for 640,
+960, 1280, 1600 and 2000, and any other width works if added there later, with no rebuild and no
+new files. `sizes`, not the build, decides what a phone or a retina laptop downloads.
+
+Quality lives in the `SOURCES` map in `worker/index.mjs`: screenshots are served at WebP quality
+95, the painted header artwork at 92, the logo at 90. That is deliberately high — the loss this
+site used to have came from `format=auto` (AVIF) at quality 60-62, which smears UI text and bands
+gradients. AVIF is not requested anywhere anymore.
+
+The masters are not in git-only land: upload them with the R2 tooling. Copy `.env.example` to
+`.env` and fill in the R2 S3 credentials, then:
 
 ```bash
 npm run assets:sync:dry   # list what would be uploaded
-npm run assets:sync       # upload missing objects
-npm run assets:verify     # HEAD every public URL and its AVIF variant
+npm run assets:sync       # upload missing objects (-- --force to overwrite)
+npm run assets:verify     # HEAD the objects and the /img/ URLs served by the Worker
 ```
 
-`sync` skips objects that already exist; pass `-- --force` to overwrite and `-- --only=<key>`
-to sync a single entry. `verify` fails when a transformed URL does not return `image/avif` or
-when an asset exceeds its byte budget.
+`sync` keys off `scripts/assets/manifest.json`. `verify` fails when a stored object is missing or
+when a served image is not `image/webp` or blows its byte budget (450 KB for a screenshot at 2000,
+900 KB for the header art). After uploading a changed master, purge that object and its
+`/cdn-cgi/image/` URLs in the Cloudflare cache, since both caches hold it for a year.
 
-Images are converted at the edge. Requesting
-`https://assets-projects.lipecode.com/cdn-cgi/image/width=2000,quality=60,format=auto/rustchamber/bg-header-art.png`
-returns AVIF to clients that accept it; no AVIF files are stored in the bucket. Uploaded
-objects carry `Cache-Control: public, max-age=604800, stale-while-revalidate=86400`, so
-browsers keep them for a week.
+`npm run dev` and `npm run preview` proxy `/img` to the deployed site, so local development uses
+the same dynamic endpoint as production.
 
-Cloudflare only encodes AVIF up to 2000 px, so the `srcset` widths stop at 2000; wider
-requests fall back to WebP. To change an image, prefer a new key and update the caller. If the
-key must stay, run `npm run assets:sync -- --force --only=<key>` and purge both the object and
-its `/cdn-cgi/image/` URLs in the Cloudflare cache.
 
 ## Deployment
 
@@ -144,6 +157,10 @@ pins the `account_id`. The custom domain `rustchamber.lipecode.com` is attached 
 Cloudflare dashboard, and the `workers.dev` routes are disabled, so that hostname is the only
 way to reach the site. `npm run build` writes `dist/`, and `npm run preview:worker` serves that
 build locally through Wrangler.
+
+The Worker runs `worker/index.mjs` ahead of the static assets for `/img/*` only
+(`run_worker_first`), so the image endpoint gets every image request while everything else is
+served straight from `dist/` by Cloudflare's asset handling, untouched.
 
 `html_handling: "auto-trailing-slash"` serves `/download/` from `download/index.html` and
 redirects `/download` to it. `not_found_handling: "none"` returns a real 404 for unknown paths

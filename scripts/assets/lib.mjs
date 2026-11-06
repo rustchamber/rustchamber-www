@@ -50,11 +50,6 @@ export function publicUrl(key) {
 	return `${publicBaseUrl}/${encodeKey(objectKey(key))}`;
 }
 
-export function transformUrl(key, { width, quality }) {
-	const { publicBaseUrl } = r2Config();
-	return `${publicBaseUrl}/cdn-cgi/image/width=${width},quality=${quality},format=auto/${encodeKey(objectKey(key))}`;
-}
-
 function sha256Hex(value) {
 	return createHash('sha256').update(value).digest('hex');
 }

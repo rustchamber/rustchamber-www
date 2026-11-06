@@ -10,11 +10,6 @@
 		"contentType": "image/png"
 	},
 	{
-		"source": "assets/og.jpg",
-		"key": "og.jpg",
-		"contentType": "image/jpeg"
-	},
-	{
 		"source": "assets/screenshots/rustchamber-chat-dark.webp",
 		"key": "screenshots/rustchamber-chat-dark.webp",
 		"contentType": "image/webp"

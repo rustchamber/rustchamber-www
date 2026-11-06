@@ -1,16 +1,17 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "rustchamber-www",
-  "account_id": "cdb43b73053a4ce4ffb620649568c034",
-  "compatibility_date": "2026-11-05",
-  "workers_dev": false,
-  "preview_urls": false,
-  "routes": [
-    { "pattern": "rustchamber.lipecode.com", "custom_domain": true }
-  ],
-  "assets": {
-    "directory": "./dist",
-    "html_handling": "auto-trailing-slash",
-    "not_found_handling": "none"
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "rustchamber-www",
+	"account_id": "cdb43b73053a4ce4ffb620649568c034",
+	"main": "worker/index.mjs",
+	"compatibility_date": "2026-11-05",
+	"workers_dev": false,
+	"preview_urls": false,
+	"routes": [{ "pattern": "rustchamber.lipecode.com", "custom_domain": true }],
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS",
+		"html_handling": "auto-trailing-slash",
+		"not_found_handling": "none",
+		"run_worker_first": ["/img/*"]
+	}
 }

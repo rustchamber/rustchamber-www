@@ -23,8 +23,8 @@
       <a class="brand" href="/" onclick={close} aria-label={BRAND}>
         <img
           class="brand-logo"
-          src={imageUrl('logo.png', { width: 60, quality: 80 })}
-          srcset={`${imageUrl('logo.png', { width: 30, quality: 80 })} 1x, ${imageUrl('logo.png', { width: 60, quality: 80 })} 2x`}
+          src={imageUrl('logo', 60)}
+          srcset={`${imageUrl('logo', 30)} 1x, ${imageUrl('logo', 60)} 2x`}
           sizes="30px"
           alt=""
           width="30"
