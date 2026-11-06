@@ -9,6 +9,10 @@
         ['Managed OpenCode server', 'Automatic port, random password, reconnect and a clean shutdown.'],
         ['Theme engine', 'Light and dark pairs, bundled fonts, density and typography controls.'],
         ['Command palette', 'Sessions, commands and settings from ⌘K.'],
+        ['Project registry', 'Add projects by folder, clone a repository, or import from OpenCode. A fresh install starts empty.'],
+        ['Project-scoped sessions', 'A centered new-session composer with a project or Chat target, per-project drafts, folders, pins and archive.'],
+        ['Session lifecycle', 'Sessions stay in progress after a turn ends until you mark them done, with a live spinner and elapsed counter.'],
+        ['Permission modes', 'A per-session shield switches between asking for every tool and allowing everything.'],
         ['In-app updates', 'A blue download arrow in the sidebar, background download, and restart to install. Homebrew updates through brew.'],
       ],
     },
@@ -21,6 +25,8 @@
     },
     {
       title: 'Later', icon: GitBranch, items: [
+        ['AI session titles', 'Rename a session from its transcript with a small local model.'],
+        ['Mini Chat and worktrees', 'Open a session in a compact window and move work between git worktrees.'],
         ['MCP configuration editor', 'Add, edit and remove MCP servers from Settings.'],
         ['Mobile companion', 'A paired phone client for sessions running on your machine.'],
         ['Collaborative review', 'Share a diff walkthrough with a teammate.'],
