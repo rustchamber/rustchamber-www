@@ -2,10 +2,10 @@
   import { Apple, Smartphone } from '@lucide/svelte'
   import { GITHUB } from '../site'
 
-  const DMG = GITHUB + '/releases/download/v0.1.0-beta/RustChamber-0.1.0-beta-macos-universal.dmg'
+  const DMG = GITHUB + '/releases/download/v0.2.0-beta/RustChamber-0.2.0-beta-macos-universal.dmg'
 
   const desktop = [
-    { label: 'macOS (Apple Silicon & Intel)', ver: '0.1.0 beta', icon: Apple },
+    { label: 'macOS (Apple Silicon & Intel)', ver: '0.2.0 beta', icon: Apple },
   ]
   const mobile = [
     { label: 'iOS', note: 'Coming soon', icon: Apple },
@@ -15,7 +15,7 @@
     { q: 'What do I need before installing?', a: 'macOS and the OpenCode CLI on your PATH. RustChamber starts a managed opencode serve process on a free loopback port and stops it when the app quits. You can also point it at an existing server in Settings → General.' },
     { q: 'Which download do I need?', a: 'The universal disk image runs on Apple Silicon and Intel. Open the DMG, drag RustChamber to Applications and install the OpenCode CLI.' },
     { q: 'Why is macOS blocking the app?', a: 'Builds are ad-hoc signed. Open System Settings → Privacy & Security and choose Open Anyway, or clear the quarantine flag with xattr -dr com.apple.quarantine /Applications/RustChamber.app.' },
-    { q: 'How does RustChamber update?', a: 'The beta has no auto-updater. Download the new DMG and replace the app; your settings stay in place.' },
+    { q: 'How does RustChamber update?', a: 'RustChamber checks GitHub Releases a few seconds after launch and every hour. When a newer version exists, a blue download arrow appears at the bottom of the sidebar: it opens the release notes and downloads in the background, then offers Restart to update. Homebrew installs update through brew upgrade --cask rustchamber. Builds before 0.2.0-beta need one manual install before the updater takes over.' },
     { q: 'Are Windows and Linux available?', a: 'Not yet. Both compile in CI, but macOS is the tested target and the only published build.' },
     { q: 'Can I use my own OpenCode server?', a: 'Yes. Set the endpoint and password in Settings → General, or write them to the settings file. The password is stored as plain text in that file.' },
     { q: 'Where do I report a bug?', a: 'Open an issue on the repository with the version, your macOS version and the steps to reproduce. Logs and a screenshot help a lot.' },

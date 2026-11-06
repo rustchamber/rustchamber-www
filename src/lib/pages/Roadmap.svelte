@@ -9,11 +9,11 @@
         ['Managed OpenCode server', 'Automatic port, random password, reconnect and a clean shutdown.'],
         ['Theme engine', 'Light and dark pairs, bundled fonts, density and typography controls.'],
         ['Command palette', 'Sessions, commands and settings from ⌘K.'],
+        ['In-app updates', 'A blue download arrow in the sidebar, background download, and restart to install. Homebrew updates through brew.'],
       ],
     },
     {
       title: 'In progress', icon: Circle, items: [
-        ['Auto-update', 'Signed updates delivered inside the app.'],
         ['Linux and Windows polish', 'Hands-on testing, packaging and installer flows beyond CI builds.'],
         ['Web preview', 'An embedded preview for generated pages and local dev servers.'],
         ['Plugin manager', 'Browse and configure extensions without leaving the app.'],
